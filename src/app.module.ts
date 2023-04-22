@@ -1,9 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
 import { DeveloperModule } from './developer/developer.module';
-import { PrismaModule } from './prisma/prisma.module';
+import configuration from './config/configuration';
 
 @Module({
-  imports: [DeveloperModule, PrismaModule],
+  imports: [
+    DeveloperModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      cache: true
+    })
+  ],
   controllers: [],
   providers: [],
 })
