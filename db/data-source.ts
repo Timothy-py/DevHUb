@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { DataSource, DataSourceOptions } from "typeorm";
 
 let dataObj;
