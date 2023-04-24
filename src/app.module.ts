@@ -1,9 +1,12 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/data-source';
+import { DeveloperModule } from './developer/developer.module';
 
 @Module({
   imports: [
@@ -13,8 +16,9 @@ import { dataSourceOptions } from 'db/data-source';
       cache: true
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-  ],
-  controllers: [],
-  providers: [],
+    DeveloperModule
+  ]
 })
+
+
 export class AppModule {}

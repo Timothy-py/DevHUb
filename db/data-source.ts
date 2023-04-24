@@ -3,17 +3,13 @@ import { DataSource, DataSourceOptions } from "typeorm";
 
 let dataObj;
 
-if(process.env.NODE_ENV === 'production'){
+if(process.env.NODE_ENV == 'production'){
     dataObj = {
-        url: '',
+        url: process.env.DATABASE_URL,
         type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'timothy',
-        password: 'plati442',
-        database: 'devhub',
         entities: ['dist/**/*.entity.js'],
         synchronize:false,
+        logging: true,
         migrations: ['dist/db/migrations/*.js']
     }
 } else{
