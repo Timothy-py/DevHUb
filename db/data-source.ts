@@ -7,16 +7,24 @@ if(process.env.NODE_ENV == 'production'){
     dataObj = {
         url: process.env.DATABASE_URL,
         type: 'postgres',
-        entities: ['dist/**/*.entity.js'],
         synchronize:false,
-        logging: true,
-        migrations: ['dist/db/migrations/*.js']
+        logging: ["error", "warn"],
+        entities: ['dist/src/**/*.entity.js'],
+        migrations: ['dist/db/migrations/*.js'],
+        cli: {
+            migrationsDir: 'src/db/migrations'
+        }
     }
 } else{
     dataObj = {
         type: 'sqlite',
         database: 'devhub.sql',
-        synchronize: true
+        synchronize: true,
+        entities: ['dist/src/**/*.entity.js'],
+        migrations: ['dist/db/migrations/*.js'],
+        cli: {
+            migrationsDir: 'src/db/migrations'
+        }
     }
 }
 

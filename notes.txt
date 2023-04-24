@@ -1,0 +1,13 @@
+- long command          + npm script
+
+- npx typeorm migration:generate ./db/migrations/InitialMigration -d ./dist/db/data-source.js
+
++ npm run migration:generate -- ./db/migrations/InitialMigration
+
+- npx typeorm migration:run -d ./dist/db/data-source.js
+
++ npm run migration:run
+
+- npx typeorm schema:sync -d ./dist/db/data-source.js
+
++ npm run schema:sync
