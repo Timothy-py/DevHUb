@@ -14,3 +14,6 @@ export class Developer {
     @Column()
     level: string
 }
+
+// @Column()
+// profile: string
