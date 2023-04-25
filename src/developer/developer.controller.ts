@@ -2,13 +2,17 @@ import { Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common'
 import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 import { BasePath } from 'src/decorators';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
-@BasePath('developer')
+@ApiTags('Developers')
+@BasePath('developers')
 export class DeveloperController {
   constructor(private readonly developerService: DeveloperService) {}
 
   @HttpCode(200)
+  @ApiOperation({summary: "Create developer"})
+  @ApiBody({type: CreateDeveloperDto})
   @Post()
   create(@Body() dto: CreateDeveloperDto) {
     return this.developerService.create(dto);
