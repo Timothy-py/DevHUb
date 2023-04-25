@@ -1,11 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDeveloperDto } from './dto/create-developer.dto';
-import { UpdateDeveloperDto } from './dto/update-developer.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Developer } from './entities/developer.entity';
+import { Repository } from 'typeorm';
+import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 
 @Injectable()
 export class DeveloperService {
-  create(createDeveloperDto: CreateDeveloperDto) {
-    return 'This action adds a new developer';
+  constructor(
+    @InjectRepository(Developer) 
+    private readonly developerRepository: Repository<Developer>
+  ){}
+
+  // CREATE A DEVELOPER ITEM
+  async create(dto: CreateDeveloperDto) {
+    try {
+      const devObj = this.developerRepository.create(dto)
+
+      const dev = this.developerRepository.save(devObj)
+      return dev
+    } catch (error) {
+      console.log(error)
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   findAll() {

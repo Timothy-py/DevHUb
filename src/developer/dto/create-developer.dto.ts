@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { Level } from "./enum.level";
 
 export class CreateDeveloperDto {
@@ -11,6 +11,8 @@ export class CreateDeveloperDto {
     @IsEmail()
     readonly email: string;
 
+    @IsNotEmpty()
+    @IsEnum(Level)
     readonly level: Level
 
 }

@@ -6,8 +6,8 @@ let dataObj;
 if(process.env.NODE_ENV == 'production'){
     dataObj = {
         url: process.env.DATABASE_URL,
-        type: 'postgres',
-        synchronize:false,
+        type: process.env.DATABASE_TYPE,
+        synchronize:true,
         logging: ["error", "warn"],
         entities: ['dist/src/**/*.entity.js'],
         migrations: ['dist/db/migrations/*.js'],

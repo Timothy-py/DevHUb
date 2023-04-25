@@ -1,3 +1,6 @@
+# Migrations
+db/migrations/*
+
 # Logs
 logs
 *.log

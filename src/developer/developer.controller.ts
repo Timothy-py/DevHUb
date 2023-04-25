@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { DeveloperService } from './developer.service';
-import { CreateDeveloperDto } from './dto/create-developer.dto';
-import { UpdateDeveloperDto } from './dto/update-developer.dto';
+import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
+import { BasePath } from 'src/decorators';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@Controller('developer')
+
+@ApiTags('Developers')
+@BasePath('developers')
 export class DeveloperController {
   constructor(private readonly developerService: DeveloperService) {}
 
+  @HttpCode(200)
+  @ApiOperation({summary: "Create developer"})
+  @ApiBody({type: CreateDeveloperDto})
   @Post()
-  create(@Body() createDeveloperDto: CreateDeveloperDto) {
-    return this.developerService.create(createDeveloperDto);
+  create(@Body() dto: CreateDeveloperDto) {
+    return this.developerService.create(dto);
   }
 
   @Get()
