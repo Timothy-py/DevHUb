@@ -12,7 +12,7 @@ export class DeveloperService {
   ){}
 
   // CREATE A DEVELOPER ITEM
-  async create(dto: CreateDeveloperDto) {
+  async create(dto: CreateDeveloperDto): Promise<Developer> {
     try {
       const devObj = this.developerRepository.create(dto)
 
@@ -20,12 +20,19 @@ export class DeveloperService {
       return dev
     } catch (error) {
       console.log(error)
-      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
-  findAll() {
-    return `This action returns all developer`;
+  // RETURN ALL DEVELOPERS
+  findAll():Promise<Developer[]> {
+    try {
+      const devs = this.developerRepository.find()
+      return devs
+    } catch (error) {
+      console.log(error)
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   findOne(id: number) {
