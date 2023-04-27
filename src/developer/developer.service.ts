@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Developer } from './entities/developer.entity';
 import { Repository } from 'typeorm';
@@ -8,7 +8,8 @@ import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 export class DeveloperService {
   constructor(
     @InjectRepository(Developer) 
-    private readonly developerRepository: Repository<Developer>
+    private readonly developerRepository: Repository<Developer>,
+    private readonly logger: Logger
   ){}
 
   // CREATE A DEVELOPER ITEM
@@ -17,9 +18,10 @@ export class DeveloperService {
       const devObj = this.developerRepository.create(dto)
 
       const dev = this.developerRepository.save(devObj)
+      this.logger.log('Developer created successfully', DeveloperService.name)
       return dev
     } catch (error) {
-      console.log(error)
+      this.logger.error('Unable to create developer', error.stack, DeveloperService.name)
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
@@ -28,9 +30,10 @@ export class DeveloperService {
   findAll():Promise<Developer[]> {
     try {
       const devs = this.developerRepository.find()
+      this.logger.log('Fetch all developers successfully', DeveloperService.name)
       return devs
     } catch (error) {
-      console.log(error)
+      this.logger.error('Unable to fetch all developers', error.stack, DeveloperService.name)
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
