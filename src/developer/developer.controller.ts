@@ -1,4 +1,4 @@
-import { Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
 import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 import { BasePath } from 'src/decorators';
@@ -22,8 +22,8 @@ export class DeveloperController {
   @HttpCode(200)
   @ApiOperation({summary: "Fetch all developers"})
   @Get()
-  findAll(): Promise<Developer[]> {
-    return this.developerService.findAll();
+  findAll(@Query('page')page:number): Promise<Developer[]> {
+    return this.developerService.findAll(page);
   }
 
   @Get(':id')

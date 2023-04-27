@@ -27,9 +27,16 @@ export class DeveloperService {
   }
 
   // RETURN ALL DEVELOPERS
-  findAll():Promise<Developer[]> {
+  findAll(page: number=1):Promise<Developer[]> {
     try {
-      const devs = this.developerRepository.find()
+      // pagination
+      const take = 20;
+      const skip = take * (page -1)
+
+      const devs = this.developerRepository.find({
+        skip,
+        take
+      })
       this.logger.log('Fetch all developers successfully', DeveloperService.name)
       return devs
     } catch (error) {
