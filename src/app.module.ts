@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import configuration from './config/configuration';
@@ -17,7 +17,8 @@ import { DeveloperModule } from './developer/developer.module';
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
     DeveloperModule
-  ]
+  ],
+  providers: [Logger]
 })
 
 

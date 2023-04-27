@@ -9,6 +9,7 @@ if(process.env.NODE_ENV == 'production'){
         type: process.env.DATABASE_TYPE,
         synchronize:true,
         logging: ["error", "warn"],
+        logger: "file",
         entities: ['dist/src/**/*.entity.js'],
         migrations: ['dist/db/migrations/*.js'],
         cli: {
@@ -20,6 +21,7 @@ if(process.env.NODE_ENV == 'production'){
         type: 'sqlite',
         database: 'devhub.sql',
         synchronize: true,
+        logging: ["error", "warn"],
         entities: ['dist/src/**/*.entity.js'],
         migrations: ['dist/db/migrations/*.js'],
         cli: {

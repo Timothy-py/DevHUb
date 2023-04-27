@@ -1,6 +1,6 @@
 # Migrations
 db/migrations/*
-
+*.sql
 # Logs
 logs
 *.log

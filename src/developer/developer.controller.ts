@@ -3,6 +3,7 @@ import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 import { BasePath } from 'src/decorators';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Developer } from './entities/developer.entity';
 
 
 @ApiTags('Developers')
@@ -10,16 +11,18 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 export class DeveloperController {
   constructor(private readonly developerService: DeveloperService) {}
 
-  @HttpCode(200)
+  @HttpCode(201)
   @ApiOperation({summary: "Create developer"})
   @ApiBody({type: CreateDeveloperDto})
   @Post()
-  create(@Body() dto: CreateDeveloperDto) {
+  create(@Body() dto: CreateDeveloperDto):Promise<Developer> {
     return this.developerService.create(dto);
   }
 
+  @HttpCode(200)
+  @ApiOperation({summary: "Fetch all developers"})
   @Get()
-  findAll() {
+  findAll(): Promise<Developer[]> {
     return this.developerService.findAll();
   }
 
