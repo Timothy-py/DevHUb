@@ -17,11 +17,17 @@ export class DeveloperService {
     try {
       const devObj = this.developerRepository.create(dto)
 
-      const dev = this.developerRepository.save(devObj)
+      const dev = await this.developerRepository.save(devObj)
+
       this.logger.log('Developer created successfully', DeveloperService.name)
+
       return dev
+
     } catch (error) {
       this.logger.error('Unable to create developer', error.stack, DeveloperService.name)
+      
+      if(error.code === "SQLITE_CONSTRAINT") throw new HttpException('Email address already exists', HttpStatus.CONFLICT)
+
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }

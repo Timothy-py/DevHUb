@@ -31,11 +31,7 @@ else{
         database: 'devhub.sql',
         synchronize: true,
         logging: ["error", "warn"],
-        entities: ['dist/src/**/*.entity.js'],
-        migrations: ['dist/db/migrations/*.js'],
-        cli: {
-            migrationsDir: 'src/db/migrations'
-        }
+        entities: ['dist/src/**/*.entity.js']
     }
 }
 
