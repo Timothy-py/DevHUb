@@ -16,7 +16,16 @@ if(process.env.NODE_ENV == 'production'){
             migrationsDir: 'src/db/migrations'
         }
     }
-} else{
+} else if(process.env.NODE_ENV == 'test'){
+    dataObj = {
+        type: 'sqlite',
+        database: 'test.sql',
+        synchronize: true,
+        entities: ['dist/src/**/*.entity.js'],
+        autoLoadEntities: true
+    }
+}
+else{
     dataObj = {
         type: 'sqlite',
         database: 'devhub.sql',
