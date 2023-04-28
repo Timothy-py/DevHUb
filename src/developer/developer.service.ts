@@ -12,19 +12,21 @@ export class DeveloperService {
     private readonly logger: Logger
   ){}
 
-  // CREATE A DEVELOPER ITEM
+  SERVICE:string = DeveloperService.name
+
+  // ************CREATE A DEVELOPER ITEM***************
   async create(dto: CreateDeveloperDto): Promise<Developer> {
     try {
       const devObj = this.developerRepository.create(dto)
 
       const dev = await this.developerRepository.save(devObj)
 
-      this.logger.log('Developer created successfully', DeveloperService.name)
+      this.logger.log('Developer created successfully', this.SERVICE)
 
       return dev
 
     } catch (error) {
-      this.logger.error('Unable to create developer', error.stack, DeveloperService.name)
+      this.logger.error('Unable to create developer', error.stack, this.SERVICE)
       
       if(error.code === "SQLITE_CONSTRAINT") throw new HttpException('Email address already exists', HttpStatus.CONFLICT)
 
@@ -32,7 +34,7 @@ export class DeveloperService {
     }
   }
 
-  // RETURN ALL DEVELOPERS
+  // *********RETURN ALL DEVELOPERS*****************
   findAll(page: number=1):Promise<Developer[]> {
     try {
       // pagination
@@ -43,10 +45,30 @@ export class DeveloperService {
         skip,
         take
       })
-      this.logger.log('Fetch all developers successfully', DeveloperService.name)
+
+      this.logger.log('Fetch all developers successfully', this.SERVICE)
+
       return devs
     } catch (error) {
-      this.logger.error('Unable to fetch all developers', error.stack, DeveloperService.name)
+      this.logger.error('Unable to fetch all developers', error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  // *************FIND DEVELOPERS BY LEVEL*************
+  async findByLevel(level: string):Promise<Developer[]> {
+    try {
+      const devs = await this.developerRepository.findBy({
+        level
+      })
+  
+      this.logger.log(`Developers fetched by levels-${level}`, this.SERVICE)
+
+      return devs;
+    } catch (error) {
+      this.logger.error(`Unable to fetch developers by level-${level}`, error.stack, this.SERVICE)
+      
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }

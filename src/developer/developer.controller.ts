@@ -26,6 +26,14 @@ export class DeveloperController {
     return this.developerService.findAll(page);
   }
 
+  @HttpCode(200)
+  @ApiOperation({summary: 'Fetch developers by level'})
+  @Get('filter')
+  findByLevel(@Query('level')level:string): Promise<Developer[]> {
+    return this.developerService.findByLevel(level);
+  }
+  
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.developerService.findOne(+id);
