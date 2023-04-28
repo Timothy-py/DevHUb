@@ -4,8 +4,8 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import configuration from './config/configuration';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from 'db/data-source';
+import { TypeOrmModule } from '@nestjs/typeorm';  
+import {dataSourceOptions} from '../db/data-source'
 import { DeveloperModule } from './developer/developer.module';
 
 @Module({

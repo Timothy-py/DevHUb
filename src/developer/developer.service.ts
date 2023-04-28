@@ -17,19 +17,32 @@ export class DeveloperService {
     try {
       const devObj = this.developerRepository.create(dto)
 
-      const dev = this.developerRepository.save(devObj)
+      const dev = await this.developerRepository.save(devObj)
+
       this.logger.log('Developer created successfully', DeveloperService.name)
+
       return dev
+
     } catch (error) {
       this.logger.error('Unable to create developer', error.stack, DeveloperService.name)
+      
+      if(error.code === "SQLITE_CONSTRAINT") throw new HttpException('Email address already exists', HttpStatus.CONFLICT)
+
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
   // RETURN ALL DEVELOPERS
-  findAll():Promise<Developer[]> {
+  findAll(page: number=1):Promise<Developer[]> {
     try {
-      const devs = this.developerRepository.find()
+      // pagination
+      const take = 20;
+      const skip = take * (page -1)
+
+      const devs = this.developerRepository.find({
+        skip,
+        take
+      })
       this.logger.log('Fetch all developers successfully', DeveloperService.name)
       return devs
     } catch (error) {
