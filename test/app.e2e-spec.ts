@@ -7,6 +7,7 @@ import {Developer} from '../src/developer/entities/developer.entity'
 import { Repository } from 'typeorm';
 
 const PORT = process.env.PORT
+const BASE_ROUTE = '/api/v1'
 
 // Nest Application Build Up Logic for Testing
 describe('AppController (E2E)', () => {
@@ -40,15 +41,37 @@ describe('AppController (E2E)', () => {
     app.close();
   })
   
+  // *********Return empty array ***********
   describe('Developer Service', () => {
     describe('Get empty developers', ()=>{
       it('should return empty arrays', () => {
         return pactum
         .spec()
-        .get('/api/v1/developers')
+        .get(`${BASE_ROUTE}/developers`)
         .expectStatus(200)
         .expectBody([])
         })
       })
+
+  // *********PASS: Create a developer**********
+    describe('Create a Developer', ()=>{
+      const dto = {
+        email: 'test1@gmail.com',
+        name: 'test1',
+        level: 'junior'
+      }
+
+      it('should create a developer', ()=>{
+        return pactum
+          .spec()
+          .post(`${BASE_ROUTE}/developers`)
+          .withBody(dto)
+          .expectStatus(201)
+          .stores('devId', 'id')
+          // .inspect()
+      })
+    })
+
+
   })
 });
