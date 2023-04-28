@@ -54,12 +54,13 @@ describe('AppController (E2E)', () => {
       })
 
   // *********PASS: Create a developer**********
+    const dto = {
+      email: 'test1@gmail.com',
+      name: 'test1',
+      level: 'junior'
+    }
+
     describe('Create a Developer', ()=>{
-      const dto = {
-        email: 'test1@gmail.com',
-        name: 'test1',
-        level: 'junior'
-      }
 
       it('should create a developer', ()=>{
         return pactum
@@ -67,11 +68,23 @@ describe('AppController (E2E)', () => {
           .post(`${BASE_ROUTE}/developers`)
           .withBody(dto)
           .expectStatus(201)
-          .stores('devId', 'id')
+          .stores('email', 'email')
           // .inspect()
       })
     })
 
+  // *********FAIL: Create a developer**********
+    describe('Don\'t create a developer', ()=>{
+      let dto2 = dto
+      dto2.email = '$S{email}'
 
+      it('should not create a developer', ()=>{
+        return pactum
+          .spec()
+          .post(`${BASE_ROUTE}/developers`)
+          .withBody(dto2)
+          .expectStatus(409)
+      })
+    })
   })
 });
