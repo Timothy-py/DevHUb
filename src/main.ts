@@ -15,7 +15,9 @@ async function bootstrap() {
   });
 
   // validate all apis with DTO
-  app.useGlobalPipes(new ValidationPipe({}))
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true
+  }))
 
   // setup swagger documentation
   const config = new DocumentBuilder()

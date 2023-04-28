@@ -1,7 +1,7 @@
 import { Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
 import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
-import { BasePath } from 'src/decorators';
+import {BasePath} from '../decorators'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Developer } from './entities/developer.entity';
 
