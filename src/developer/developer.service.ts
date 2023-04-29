@@ -73,8 +73,23 @@ export class DeveloperService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} developer`;
+  // *************** GET THE DETAILS OF A DEVELOPER ********** 
+  async findOne(id:any): Promise<Developer> {
+    try {
+      const dev = await this.developerRepository.findOne({
+        where: {
+          id
+        }
+      })
+
+      this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE) 
+      
+      return dev
+    } catch (error) {
+      this.logger.error(`Unable to GET the developer-${id} details`, error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   update(id: number, updateDeveloperDto: UpdateDeveloperDto) {
