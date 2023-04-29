@@ -41,8 +41,10 @@ describe('AppController (E2E)', () => {
     app.close();
   })
   
-  // *********Return empty array ***********
+  
   describe('Developer Service', () => {
+
+    // *********Return empty array ***********
     describe('Get empty developers', ()=>{
       it('should return empty arrays', () => {
         return pactum
@@ -53,29 +55,42 @@ describe('AppController (E2E)', () => {
         })
       })
 
-  // *********PASS: Create a developer**********
-    const dto = {
-      email: 'test1@gmail.com',
-      name: 'test1',
-      level: 'junior'
-    }
+    const dto = [
+      {
+        email: 'test1@gmail.com',
+        name: 'test1',
+        level: 'junior'
+      },
+      {
+        email: 'test4@gmail.com',
+        name: 'test4',
+        level: 'junior'
+      },
+      {
+        email: 'test3@gmail.com',
+        name: 'test3',
+        level: 'senior'
+      }
+    ]
 
-    describe('Create a Developer', ()=>{
-
-      it('should create a developer', ()=>{
-        return pactum
-          .spec()
-          .post(`${BASE_ROUTE}/developers`)
-          .withBody(dto)
-          .expectStatus(201)
-          .stores('email', 'email')
-          // .inspect()
+    // *********PASS: Create Developers**********
+    // dto.forEach(obj => {
+      describe('Create a Developer', ()=>{
+        it('should create a developer', ()=>{
+          return pactum
+            .spec()
+            .post(`${BASE_ROUTE}/developers`)
+            .withBody(dto[1])
+            .expectStatus(201)
+            .stores('email', 'email')
+            .inspect()
+        })
       })
-    })
+    // });
 
-  // *********FAIL: Create a developer**********
+    // *********FAIL: Create a developer**********
     describe('Don\'t create a developer', ()=>{
-      let dto2 = dto
+      let dto2 = dto[1]
       dto2.email = '$S{email}'
 
       it('should not create a developer', ()=>{
@@ -86,5 +101,29 @@ describe('AppController (E2E)', () => {
           .expectStatus(409)
       })
     })
+
+    // ********* Fetch all developers **********
+    describe('Fetch all developers', ()=>{
+      it('should get all developers', ()=>{
+        return pactum
+          .spec()
+          .get(`${BASE_ROUTE}/developers`)
+          .expectStatus(200)
+          .expectJsonLength(1)
+      })
+    })
+
+    // ********Fetch developers by level **********
+    describe('Fetch all senior developers', ()=>{
+      it('should get all senior developers', ()=>{
+        return pactum
+          .spec()
+          .get(`${BASE_ROUTE}/developers/filter?level=senior`)
+          .expectStatus(200)
+          .expectBody([])
+      })
+    })
+
+
   })
 });
