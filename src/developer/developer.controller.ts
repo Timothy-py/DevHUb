@@ -1,4 +1,4 @@
-import { Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
+import { Get, Post, Body, Patch, Param, Delete, HttpCode, Query, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
 import {BasePath} from '../decorators'
@@ -26,9 +26,19 @@ export class DeveloperController {
     return this.developerService.findAll(page);
   }
 
+  @HttpCode(200)
+  @ApiOperation({summary: 'Fetch developers by level'})
+  @Get('filter')
+  findByLevel(@Query('level')level:string): Promise<Developer[]> {
+    return this.developerService.findByLevel(level);
+  }
+  
+
+  @HttpCode(200)
+  @ApiOperation({summary: 'Get developer detail'})
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.developerService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Developer> {
+    return this.developerService.findOne(id);
   }
 
   @Patch(':id')
