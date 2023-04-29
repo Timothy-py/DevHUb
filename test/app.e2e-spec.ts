@@ -83,6 +83,7 @@ describe('AppController (E2E)', () => {
             .withBody(dto[1])
             .expectStatus(201)
             .stores('email', 'email')
+            .stores('id', 'id')
             .inspect()
         })
       })
@@ -118,12 +119,23 @@ describe('AppController (E2E)', () => {
       it('should get all senior developers', ()=>{
         return pactum
           .spec()
-          .get(`${BASE_ROUTE}/developers/filter?level=senior`)
+          .get(`${BASE_ROUTE}/developers/filter`)
+          .withQueryParams('level', 'senior')
           .expectStatus(200)
           .expectBody([])
       })
     })
 
-
+    // **********GET a developer detail************
+    describe('Find one developer', ()=>{
+      it('should get the details of a developer', ()=>{
+        return pactum
+          .spec()
+          .get(`${BASE_ROUTE}/developers/{id}`)
+          .withPathParams('id', '$S{id}')
+          .expectStatus(200)
+          .expectBodyContains('level')
+      })
+    })
   })
 });
