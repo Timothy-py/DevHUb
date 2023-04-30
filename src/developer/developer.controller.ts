@@ -45,12 +45,17 @@ export class DeveloperController {
   @ApiOperation({summary: 'Update a developer detail'})
   @ApiBody({type: UpdateDeveloperDto})
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDeveloperDto: UpdateDeveloperDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDeveloperDto: UpdateDeveloperDto
+  ) {
     return this.developerService.update(id, updateDeveloperDto);
   }
 
+  @HttpCode(204)
+  @ApiOperation({summary: 'Delete a developer'})
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.developerService.remove(+id);
+  delete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.developerService.delete(id);
   }
 }

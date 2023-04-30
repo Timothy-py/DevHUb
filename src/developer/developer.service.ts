@@ -82,10 +82,14 @@ export class DeveloperService {
         }
       })
 
+      if(dev === null) throw new NotFoundException()
+
       this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE) 
       
       return dev
     } catch (error) {
+      if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
+
       this.logger.error(`Unable to GET the developer-${id} details`, error.stack, this.SERVICE)
       
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -105,14 +109,25 @@ export class DeveloperService {
       return dev;
     } catch (error) {
       if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
-      
+
       this.logger.error(`Unable to UPDATE the developer-${id}`, error.stack, this.SERVICE)
       
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
-  delete(id: number) {
-    
+  // ************** DELETE A DEVELOPER ****************
+  async delete(id: any) {
+    try {
+      await this.developerRepository.delete({
+        id 
+      })
+
+      return;
+    } catch (error) {
+      this.logger.error(`Unable to DELETE the developer-${id}`, error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 }
