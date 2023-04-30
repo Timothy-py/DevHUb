@@ -41,7 +41,7 @@ describe('AppController (E2E)', () => {
     app.close();
   })
   
-  
+  // **************START TEST CASES*************************
   describe('Developer Service', () => {
 
     // *********Return empty array ***********
@@ -84,7 +84,7 @@ describe('AppController (E2E)', () => {
             .expectStatus(201)
             .stores('email', 'email')
             .stores('id', 'id')
-            .inspect()
+            // .inspect()
         })
       })
     // });
@@ -135,6 +135,24 @@ describe('AppController (E2E)', () => {
           .withPathParams('id', '$S{id}')
           .expectStatus(200)
           .expectBodyContains('level')
+      })
+    })
+
+    // **************UPDATE a developer detail***********
+    describe('Update a developer', ()=>{
+      it('should update the developer level to senior', ()=>{
+        return pactum
+          .spec()
+          .patch(`${BASE_ROUTE}/developers/{id}`)
+          .withPathParams('id', '$S{id}')
+          .withBody({
+            "name": "tester"
+          })
+          .expectStatus(200)
+          .expectJsonMatch({
+            name: "tester"
+          })
+          .inspect()
       })
     })
   })
