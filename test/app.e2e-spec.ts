@@ -152,7 +152,17 @@ describe('AppController (E2E)', () => {
           .expectJsonMatch({
             name: "tester"
           })
-          .inspect()
+      })
+    })
+
+    // ***********DELETE a developer*****************
+    describe('Delete a developer', ()=>{
+      it('should delete a developer', ()=>{
+        return pactum
+          .spec()
+          .delete(`${BASE_ROUTE}/developers/{id}`)
+          .withPathParams('id', '$S{id}')
+          .expectStatus(204)
       })
     })
   })
