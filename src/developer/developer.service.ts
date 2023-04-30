@@ -92,8 +92,20 @@ export class DeveloperService {
     }
   }
 
-  update(id: number, updateDeveloperDto: UpdateDeveloperDto) {
-    return `This action updates a #${id} developer`;
+  // *****************UPDATE A DEVELOPER*****************
+  async update(id: any, updateDeveloperDto: UpdateDeveloperDto) {
+    try {
+      const dev =  await this.developerRepository.update(id, updateDeveloperDto)
+      console.log(dev)
+
+      this.logger.log(`Query executed to UPDATE developer - ${id}`, this.SERVICE) 
+      
+      return this.developerRepository.findOne({where: {id}})
+    } catch (error) {
+      this.logger.error(`Unable to UPDATE the developer-${id}`, error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   remove(id: number) {
