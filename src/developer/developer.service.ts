@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Developer } from './entities/developer.entity';
 import { Repository } from 'typeorm';
@@ -82,21 +82,52 @@ export class DeveloperService {
         }
       })
 
+      if(dev === null) throw new NotFoundException()
+
       this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE) 
       
       return dev
     } catch (error) {
+      if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
+
       this.logger.error(`Unable to GET the developer-${id} details`, error.stack, this.SERVICE)
       
       throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
-  update(id: number, updateDeveloperDto: UpdateDeveloperDto) {
-    return `This action updates a #${id} developer`;
+  // *****************UPDATE A DEVELOPER*****************
+  async update(id: any, updateDeveloperDto: UpdateDeveloperDto) {
+    try {
+      await this.developerRepository.update(id, updateDeveloperDto)
+      
+      const dev = await this.developerRepository.findOne({where: {id}})
+
+      if(dev === null) throw new NotFoundException()
+
+      this.logger.log(`Query executed to UPDATE developer - ${id}`, this.SERVICE) 
+      return dev;
+    } catch (error) {
+      if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
+
+      this.logger.error(`Unable to UPDATE the developer-${id}`, error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} developer`;
+  // ************** DELETE A DEVELOPER ****************
+  async delete(id: any) {
+    try {
+      await this.developerRepository.delete({
+        id 
+      })
+
+      return;
+    } catch (error) {
+      this.logger.error(`Unable to DELETE the developer-${id}`, error.stack, this.SERVICE)
+      
+      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 }
