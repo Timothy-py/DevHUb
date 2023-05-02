@@ -110,16 +110,6 @@ export class DeveloperService {
   // *************** GET THE DETAILS OF A DEVELOPER **********
   async findOne(id: any): Promise<Developer> {
     try {
-<<<<<<< HEAD
-      const dev = await this.developerRepository.findOne({
-        where: {
-          id,
-        },
-      });
-
-      if (dev === null) throw new NotFoundException();
-
-=======
       // first check if dev data is available in cache memory
       const cacheKey = `developer_${id}`;
       let dev: Developer = await this.cacheManager.get(cacheKey);
@@ -140,7 +130,6 @@ export class DeveloperService {
         await this.cacheManager.set(cacheKey, dev);
       }
 
->>>>>>> fix
       this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE);
 
       return dev;
