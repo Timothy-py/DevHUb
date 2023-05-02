@@ -7,6 +7,13 @@ import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';  
 import {dataSourceOptions} from '../db/data-source'
 import { DeveloperModule } from './developer/developer.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redis from 'redis';
+import * as redisStore from 'cache-manager-redis';
+
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL
+})
 
 @Module({
   imports: [
@@ -16,7 +23,15 @@ import { DeveloperModule } from './developer/developer.module';
       cache: true
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    DeveloperModule
+    DeveloperModule,
+    CacheModule.register({
+      store: redisStore,
+      client: redisClient,
+      // url: process.env.REDIS_URL,
+      isGlobal: true,
+      ttl: 60,
+      max: 100
+    })
   ],
   providers: [Logger]
 })
