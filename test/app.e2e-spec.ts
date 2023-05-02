@@ -74,25 +74,24 @@ describe('AppController (E2E)', () => {
     ]
 
     // *********PASS: Create Developers**********
-    // dto.forEach(obj => {
+    dto.forEach(obj => {
       describe('Create a Developer', ()=>{
         it('should create a developer', ()=>{
           return pactum
             .spec()
             .post(`${BASE_ROUTE}/developers`)
-            .withBody(dto[1])
+            .withBody(obj)
             .expectStatus(201)
             .stores('email', 'email')
             .stores('id', 'id')
             // .inspect()
         })
       })
-    // });
+    });
 
     // *********FAIL: Create a developer**********
     describe('Don\'t create a developer', ()=>{
       let dto2 = dto[1]
-      dto2.email = '$S{email}'
 
       it('should not create a developer', ()=>{
         return pactum
@@ -110,7 +109,7 @@ describe('AppController (E2E)', () => {
           .spec()
           .get(`${BASE_ROUTE}/developers`)
           .expectStatus(200)
-          .expectJsonLength(1)
+          .expectJsonLength(3)
       })
     })
 
@@ -122,7 +121,7 @@ describe('AppController (E2E)', () => {
           .get(`${BASE_ROUTE}/developers/filter`)
           .withQueryParams('level', 'senior')
           .expectStatus(200)
-          .expectBody([])
+          .expectJsonLength(1)
       })
     })
 
@@ -140,7 +139,7 @@ describe('AppController (E2E)', () => {
 
     // **************UPDATE a developer detail***********
     describe('Update a developer', ()=>{
-      it('should update the developer level to senior', ()=>{
+      it('should update the developer name', ()=>{
         return pactum
           .spec()
           .patch(`${BASE_ROUTE}/developers/{id}`)
@@ -152,7 +151,17 @@ describe('AppController (E2E)', () => {
           .expectJsonMatch({
             name: "tester"
           })
-          .inspect()
+      })
+    })
+
+    // ***********DELETE a developer*****************
+    describe('Delete a developer', ()=>{
+      it('should delete a developer', ()=>{
+        return pactum
+          .spec()
+          .delete(`${BASE_ROUTE}/developers/{id}`)
+          .withPathParams('id', '$S{id}')
+          .expectStatus(204)
       })
     })
   })
