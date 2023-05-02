@@ -1,6 +1,7 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -9,6 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Developer } from './entities/developer.entity';
 import { Repository } from 'typeorm';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class DeveloperService {
@@ -16,6 +19,7 @@ export class DeveloperService {
     @InjectRepository(Developer)
     private readonly developerRepository: Repository<Developer>,
     private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   SERVICE: string = DeveloperService.name;
@@ -106,6 +110,7 @@ export class DeveloperService {
   // *************** GET THE DETAILS OF A DEVELOPER **********
   async findOne(id: any): Promise<Developer> {
     try {
+<<<<<<< HEAD
       const dev = await this.developerRepository.findOne({
         where: {
           id,
@@ -114,6 +119,28 @@ export class DeveloperService {
 
       if (dev === null) throw new NotFoundException();
 
+=======
+      // first check if dev data is available in cache memory
+      const cacheKey = `developer_${id}`;
+      let dev: Developer = await this.cacheManager.get(cacheKey);
+      console.log('Dev from cache', dev);
+
+      // if it is not available
+      if (!dev) {
+        dev = await this.developerRepository.findOne({
+          where: {
+            id,
+          },
+        });
+        console.log('Dev from disk', dev);
+
+        if (dev === null) throw new NotFoundException();
+
+        // save dev data into cache memory
+        await this.cacheManager.set(cacheKey, dev);
+      }
+
+>>>>>>> fix
       this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE);
 
       return dev;
