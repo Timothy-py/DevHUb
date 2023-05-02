@@ -4,7 +4,7 @@
 
 DevHub is a web-based application that provides an interface for managing developers' information. The application provides functionalities such as creating, editing, viewing, and deleting developers. DevHub is a tool that can be used by companies to manage their developer resources efficiently.
 
-# APPS
+## APPS
 
 ### Developer Resource
 
@@ -57,6 +57,17 @@ http://localhost:PORT/api/doc
 # e2e tests
 $ npm run test:e2e
 ```
+
+# Start Commands for docker-compose file  
+`docker-compose up`
+
+# Start Commands for Docker
+Build your image:  
+`docker build <your path> -t <<user>/project-name>`  
+
+Run:  
+`docker run -p 8080:3000 <<user>/project-name>`  
+
 
 ## Stay in touch
 
