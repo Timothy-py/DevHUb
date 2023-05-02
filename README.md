@@ -46,6 +46,11 @@ $ npm run start
 $ npm run start:dev
 ```
 
+## Swagger API
+```
+http://localhost:PORT/api/doc
+```
+
 ## Test
 
 ```bash

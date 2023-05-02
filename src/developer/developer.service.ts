@@ -58,7 +58,7 @@ export class DeveloperService {
   findAll(page = 1): Promise<Developer[]> {
     try {
       // pagination
-      const take = 20;
+      const take = 5;
       const skip = take * (page - 1);
 
       const devs = this.developerRepository.find({
@@ -113,7 +113,6 @@ export class DeveloperService {
       // first check if dev data is available in cache memory
       const cacheKey = `developer_${id}`;
       let dev: Developer = await this.cacheManager.get(cacheKey);
-      console.log('Dev from cache', dev);
 
       // if it is not available
       if (!dev) {
@@ -122,7 +121,6 @@ export class DeveloperService {
             id,
           },
         });
-        console.log('Dev from disk', dev);
 
         if (dev === null) throw new NotFoundException();
 
@@ -154,6 +152,10 @@ export class DeveloperService {
   async update(id: any, updateDeveloperDto: UpdateDeveloperDto) {
     try {
       await this.developerRepository.update(id, updateDeveloperDto);
+
+      // remove dev from cache
+      const cacheKey = `developer_${id}`;
+      await this.cacheManager.del(cacheKey);
 
       const dev = await this.developerRepository.findOne({ where: { id } });
 
@@ -187,6 +189,10 @@ export class DeveloperService {
       await this.developerRepository.delete({
         id,
       });
+
+      // remove dev from cache
+      const cacheKey = `developer_${id}`;
+      await this.cacheManager.del(cacheKey);
 
       return;
     } catch (error) {
