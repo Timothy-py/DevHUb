@@ -1,1 +1,1 @@
-export * from './base-path.decorator'
+export * from './base-path.decorator';

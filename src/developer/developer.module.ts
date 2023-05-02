@@ -7,6 +7,6 @@ import { Developer } from './entities/developer.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Developer])],
   controllers: [DeveloperController],
-  providers: [DeveloperService, Logger]
+  providers: [DeveloperService, Logger],
 })
 export class DeveloperModule {}

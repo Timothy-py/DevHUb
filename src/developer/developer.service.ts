@@ -1,118 +1,183 @@
-import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Developer } from './entities/developer.entity';
 import { Repository } from 'typeorm';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class DeveloperService {
   constructor(
-    @InjectRepository(Developer) 
+    @InjectRepository(Developer)
     private readonly developerRepository: Repository<Developer>,
-    private readonly logger: Logger
-  ){}
+    private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
-  SERVICE:string = DeveloperService.name
+  SERVICE: string = DeveloperService.name;
 
   // ************CREATE A DEVELOPER ITEM***************
   async create(dto: CreateDeveloperDto): Promise<Developer> {
     try {
-      const devObj = this.developerRepository.create(dto)
+      const devObj = this.developerRepository.create(dto);
 
-      const dev = await this.developerRepository.save(devObj)
+      const dev = await this.developerRepository.save(devObj);
 
-      this.logger.log('Developer created successfully', this.SERVICE)
+      this.logger.log('Developer created successfully', this.SERVICE);
 
-      return dev
-
+      return dev;
     } catch (error) {
-      this.logger.error('Unable to create developer', error.stack, this.SERVICE)
-      
-      if(error.code === "SQLITE_CONSTRAINT") throw new HttpException('Email address already exists', HttpStatus.CONFLICT)
+      this.logger.error(
+        'Unable to create developer',
+        error.stack,
+        this.SERVICE,
+      );
 
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      if (error.code === 'SQLITE_CONSTRAINT')
+        throw new HttpException(
+          'Email address already exists',
+          HttpStatus.CONFLICT,
+        );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   // *********RETURN ALL DEVELOPERS*****************
-  findAll(page: number=1):Promise<Developer[]> {
+  findAll(page = 1): Promise<Developer[]> {
     try {
       // pagination
       const take = 20;
-      const skip = take * (page -1)
+      const skip = take * (page - 1);
 
       const devs = this.developerRepository.find({
         skip,
-        take
-      })
+        take,
+      });
 
-      this.logger.log('Fetch all developers successfully', this.SERVICE)
+      this.logger.log('Fetch all developers successfully', this.SERVICE);
 
-      return devs
+      return devs;
     } catch (error) {
-      this.logger.error('Unable to fetch all developers', error.stack, this.SERVICE)
-      
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(
+        'Unable to fetch all developers',
+        error.stack,
+        this.SERVICE,
+      );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   // *************FIND DEVELOPERS BY LEVEL*************
-  async findByLevel(level: string):Promise<Developer[]> {
+  async findByLevel(level: string): Promise<Developer[]> {
     try {
       const devs = await this.developerRepository.findBy({
-        level
-      })
-  
-      this.logger.log(`Developers fetched by levels-${level}`, this.SERVICE)
+        level,
+      });
+
+      this.logger.log(`Developers fetched by levels-${level}`, this.SERVICE);
 
       return devs;
     } catch (error) {
-      this.logger.error(`Unable to fetch developers by level-${level}`, error.stack, this.SERVICE)
-      
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(
+        `Unable to fetch developers by level-${level}`,
+        error.stack,
+        this.SERVICE,
+      );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  // *************** GET THE DETAILS OF A DEVELOPER ********** 
-  async findOne(id:any): Promise<Developer> {
+  // *************** GET THE DETAILS OF A DEVELOPER **********
+  async findOne(id: any): Promise<Developer> {
     try {
-      const dev = await this.developerRepository.findOne({
-        where: {
-          id
-        }
-      })
+      // first check if dev data is available in cache memory
+      const cacheKey = `developer_${id}`;
+      let dev: Developer = await this.cacheManager.get(cacheKey);
+      console.log('Dev from cache', dev);
 
-      if(dev === null) throw new NotFoundException()
+      // if it is not available
+      if (!dev) {
+        dev = await this.developerRepository.findOne({
+          where: {
+            id,
+          },
+        });
+        console.log('Dev from disk', dev);
 
-      this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE) 
-      
-      return dev
+        if (dev === null) throw new NotFoundException();
+
+        // save dev data into cache memory
+        await this.cacheManager.set(cacheKey, dev);
+      }
+
+      this.logger.log(`Query executed to GET developer - ${id}`, this.SERVICE);
+
+      return dev;
     } catch (error) {
-      if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
+      if (error.message === 'Not Found')
+        throw new NotFoundException('Developer does not exist');
 
-      this.logger.error(`Unable to GET the developer-${id} details`, error.stack, this.SERVICE)
-      
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(
+        `Unable to GET the developer-${id} details`,
+        error.stack,
+        this.SERVICE,
+      );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   // *****************UPDATE A DEVELOPER*****************
   async update(id: any, updateDeveloperDto: UpdateDeveloperDto) {
     try {
-      await this.developerRepository.update(id, updateDeveloperDto)
-      
-      const dev = await this.developerRepository.findOne({where: {id}})
+      await this.developerRepository.update(id, updateDeveloperDto);
 
-      if(dev === null) throw new NotFoundException()
+      const dev = await this.developerRepository.findOne({ where: { id } });
 
-      this.logger.log(`Query executed to UPDATE developer - ${id}`, this.SERVICE) 
+      if (dev === null) throw new NotFoundException();
+
+      this.logger.log(
+        `Query executed to UPDATE developer - ${id}`,
+        this.SERVICE,
+      );
       return dev;
     } catch (error) {
-      if(error.message === 'Not Found') throw new NotFoundException('Developer does not exist')
+      if (error.message === 'Not Found')
+        throw new NotFoundException('Developer does not exist');
 
-      this.logger.error(`Unable to UPDATE the developer-${id}`, error.stack, this.SERVICE)
-      
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(
+        `Unable to UPDATE the developer-${id}`,
+        error.stack,
+        this.SERVICE,
+      );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -120,14 +185,21 @@ export class DeveloperService {
   async delete(id: any) {
     try {
       await this.developerRepository.delete({
-        id 
-      })
+        id,
+      });
 
       return;
     } catch (error) {
-      this.logger.error(`Unable to DELETE the developer-${id}`, error.stack, this.SERVICE)
-      
-      throw new HttpException(`${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(
+        `Unable to DELETE the developer-${id}`,
+        error.stack,
+        this.SERVICE,
+      );
+
+      throw new HttpException(
+        `${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
