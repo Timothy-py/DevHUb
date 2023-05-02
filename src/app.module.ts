@@ -1,11 +1,11 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import configuration from './config/configuration';
-import { TypeOrmModule } from '@nestjs/typeorm';  
-import {dataSourceOptions} from '../db/data-source'
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOptions } from '../db/data-source';
 import { DeveloperModule } from './developer/developer.module';
 
 @Module({
@@ -13,13 +13,11 @@ import { DeveloperModule } from './developer/developer.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-      cache: true
+      cache: true,
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    DeveloperModule
+    DeveloperModule,
   ],
-  providers: [Logger]
+  providers: [Logger],
 })
-
-
 export class AppModule {}

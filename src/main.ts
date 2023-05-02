@@ -5,30 +5,36 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WinstonModule } from 'nest-winston';
 import { instance } from 'logger/winston.logger';
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
-      instance: instance
-    })
+      instance: instance,
+    }),
   });
 
   // validate all apis with DTO
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true
-  }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
 
   // setup swagger documentation
   const config = new DocumentBuilder()
     .setTitle('DevHub API')
     .setDescription('Swagger OpenAPI documentation for DevHub API')
     .setVersion('1.0')
-    .setContact('Timothy', 'https://github.com/Timothy-py', 'adeyeyetimothy33@gmail.com')
-    .build()
+    .setContact(
+      'Timothy',
+      'https://github.com/Timothy-py',
+      'adeyeyetimothy33@gmail.com',
+    )
+    .build();
 
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api/doc', app, document)
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/doc', app, document);
 
   // ****api docs available @ http://localhost:PORT/api/doc
 

@@ -5,12 +5,11 @@ import { Level } from './enum.level';
 
 // export class UpdateDeveloperDto extends OmitType(CreateDeveloperDto, ['email']) {}
 export class UpdateDeveloperDto {
+  @IsOptional()
+  @IsString()
+  readonly name: string;
 
-    @IsOptional()
-    @IsString()
-    readonly name: string;
-
-    @IsOptional()
-    @IsEnum(Level)
-    readonly level: Level;
+  @IsOptional()
+  @IsEnum(Level)
+  readonly level: Level;
 }
