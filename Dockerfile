@@ -1,13 +1,13 @@
-FROM node:16
+FROM node:16-alpine
 
 # Create the working directory
-WORKDIR /usr/src/devhub
+WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --timeout=300000
+RUN npm install
 
 # Copy the rest of the application files to the working directory
 COPY . .
@@ -16,11 +16,11 @@ COPY . .
 RUN npm run build
 
 # Set the environment variables
-ENV NODE_ENV=production
 ENV PORT=3000
+ENV NODE_ENV=production
 
 # Expose the application port
-EXPOSE $PORT
+EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "start"]

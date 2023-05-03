@@ -46,11 +46,6 @@ $ npm run start
 $ npm run start:dev
 ```
 
-## Swagger API
-```
-http://localhost:PORT/api/doc
-```
-
 ## Test
 
 ```bash
@@ -58,16 +53,23 @@ http://localhost:PORT/api/doc
 $ npm run test:e2e
 ```
 
-# Start Commands for docker-compose file  
+# Start Commands for docker-compose file
+
 `docker-compose up`
 
 # Start Commands for Docker
+
 Build your image:  
-`docker build <your path> -t <<user>/project-name>`  
+`docker build <your path> -t <<user>/project-name>`
 
 Run:  
-`docker run -p 8080:3000 <<user>/project-name>`  
+`docker run -p 8080:3000 <<user>/project-name>`
 
+## Swagger API
+
+```
+http://localhost:3000/api/doc
+```
 
 ## Stay in touch
 

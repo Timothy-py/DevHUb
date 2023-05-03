@@ -11,21 +11,26 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - DATABASE_TYPE=postgres
-      - DATABASE_URL=postgres://user:password@postgres:5432/db
+      - DATABASE_URL=postgres://user:password@db:5432/devhub
       - REDIS_URL=redis:localhost:6379
     ports:
-      - "8080:3000"
+      - "3000:3000"
     
   db:
     image: postgres:13
     ports:
-      - "3500:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=devhub
+    volumes:
+      - dbdata:/var/lib/postgresql/data
   
   cache:
     image: redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
+
+volumes:
+  dbdata:
