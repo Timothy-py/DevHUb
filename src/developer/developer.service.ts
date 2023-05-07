@@ -55,13 +55,13 @@ export class DeveloperService {
   }
 
   // *********RETURN ALL DEVELOPERS*****************
-  findAll(page = 1): Promise<Developer[]> {
+  async findAll(page = 1): Promise<Developer[]> {
     try {
       // pagination
       const take = 5;
       const skip = take * (page - 1);
 
-      const devs = this.developerRepository.find({
+      const devs = await this.developerRepository.find({
         skip,
         take,
       });
@@ -108,7 +108,7 @@ export class DeveloperService {
   }
 
   // *************** GET THE DETAILS OF A DEVELOPER **********
-  async findOne(id: any): Promise<Developer> {
+  async findOne(id: string): Promise<Developer> {
     try {
       // first check if dev data is available in cache memory
       const cacheKey = `developer_${id}`;
@@ -149,7 +149,7 @@ export class DeveloperService {
   }
 
   // *****************UPDATE A DEVELOPER*****************
-  async update(id: any, updateDeveloperDto: UpdateDeveloperDto) {
+  async update(id: string, updateDeveloperDto: UpdateDeveloperDto) {
     try {
       await this.developerRepository.update(id, updateDeveloperDto);
 
@@ -184,7 +184,7 @@ export class DeveloperService {
   }
 
   // ************** DELETE A DEVELOPER ****************
-  async delete(id: any) {
+  async delete(id: string) {
     try {
       await this.developerRepository.delete({
         id,
