@@ -8,15 +8,15 @@ import {
   HttpCode,
   Query,
   ParseUUIDPipe,
+  Controller,
 } from '@nestjs/common';
 import { DeveloperService } from './developer.service';
 import { CreateDeveloperDto, UpdateDeveloperDto } from './dto';
-import { BasePath } from '../decorators';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Developer } from './entities/developer.entity';
 
 @ApiTags('Developers')
-@BasePath('developers')
+@Controller('developers')
 export class DeveloperController {
   constructor(private readonly developerService: DeveloperService) {}
 

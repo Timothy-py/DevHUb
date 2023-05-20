@@ -21,6 +21,9 @@ async function bootstrap() {
     }),
   );
 
+  // specify global prefix
+  app.setGlobalPrefix('/api/v1');
+
   // setup swagger documentation
   const config = new DocumentBuilder()
     .setTitle('DevHub API')
